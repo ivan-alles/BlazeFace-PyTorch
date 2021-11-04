@@ -18,10 +18,19 @@ def show_detection(image, detection):
     confidence = detection[..., -1:]
     positions = detection[..., :-1].reshape(detection.shape[0], 8, 2) * image.shape[1::-1]
 
-    for face in positions:
+    for i, face in enumerate(positions):
         cv2.rectangle(image, cv_point(face[0]), cv_point(face[1]), (0, 255, 0))
         for p in range(2, len(face)):
             cv2.circle(image, cv_point(face[p]), 3, (0, 255, 0))
+
+        conf = confidence[i][0]
+        text_params = {
+            'fontFace': cv2.FONT_HERSHEY_SIMPLEX,
+            'fontScale': 1.0,
+            'thickness': 1,
+            'color': (0, 255, 0)
+        }
+        cv2.putText(image, f'conf {conf:.3f}', (2, 30), **text_params)
 
 
 def predict(image_path):
